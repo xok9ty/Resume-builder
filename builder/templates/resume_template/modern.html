@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ resume.title }}</title>
+    <link href="{% static 'css/resume_templates/modern.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="modern-resume">
+        <aside class="sidebar">
+            {% if personal_info.photo %}
+            <img src="{{ personal_info.photo.url }}" alt="Profile Photo" class="profile-photo">
+            {% endif %}
+            
+            <h1>{{ personal_info.first_name }}<br>{{ personal_info.last_name }}</h1>
+            <p class="profession">{{ work_experiences.0.position }}</p>
+            
+            <div class="contact">
+                <h2>Контакти</h2>
+                <p><i class="icon">📧</i> {{ personal_info.email }}</p>
+                <p><i class="icon">📱</i> {{ personal_info.phone }}</p>
+                {% if personal_info.address %}<p><i class="icon">🏠</i> {{ personal_info.address }}</p>{% endif %}
+            </div>
+            
+            <div class="skills">
+                <h2>Навички</h2>
+                <ul>
+                    {% for skill in skills %}
+                    <li>{{ skill.name }} ({{ skill.get_level_display }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+        
+        <main class="content">
+            <section class="summary">
+                <h2>Профіль</h2>
+                <p>{{ personal_info.summary }}</p>
+            </section>
+            
+            <section class="experience">
+                <h2>Досвід роботи</h2>
+                {% for exp in work_experiences %}
+                <div class="job">
+                    <h3>{{ exp.position }}</h3>
+                    <p class="company">{{ exp.company }}</p>
+                    <p class="period">{{ exp.start_date|date:"M Y" }} - {% if exp.currently_working %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</p>
+                    <p class="description">{{ exp.description }}</p>
+                </div>
+                {% endfor %}
+            </section>
+            
+            <section class="education">
+                <h2>Освіта</h2>
+                {% for edu in educations %}
+                <div class="school">
+                    <h3>{{ edu.institution }}</h3>
+                    <p class="degree">{{ edu.degree }}, {{ edu.field_of_study }}</p>
+                    <p class="period">{{ edu.start_date|date:"Y" }} - {% if edu.currently_studying %}Present{% else %}{{ edu.end_date|date:"Y" }}{% endif %}</p>
+                </div>
+                {% endfor %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

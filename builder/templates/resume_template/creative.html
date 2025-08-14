@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ personal_info.first_name }} {{ personal_info.last_name }} - Resume</title>
+    <link href="{% static 'css/resume_templates/creative.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="creative-resume">
+        <div class="header">
+            <div class="name-title">
+                <h1>{{ personal_info.first_name }} <span>{{ personal_info.last_name }}</span></h1>
+                <p class="title">{{ work_experiences.0.position }}</p>
+            </div>
+            
+            <div class="contact-info">
+                <p>{{ personal_info.email }}</p>
+                <p>{{ personal_info.phone }}</p>
+                {% if personal_info.website %}<p><a href="{{ personal_info.website }}">{{ personal_info.website }}</a></p>{% endif %}
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="left-column">
+                <section class="about">
+                    <h2>Про мене</h2>
+                    <p>{{ personal_info.summary }}</p>
+                </section>
+                
+                <section class="skills">
+                    <h2>Професійні навички</h2>
+                    <ul>
+                        {% for skill in skills %}
+                        <li>
+                            <span class="skill-name">{{ skill.name }}</span>
+                            <div class="skill-level">
+                                <div class="level-bar" style="width: { % widthratio forloop.counter 1 20 % } "></div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+            
+            <div class="right-column">
+                <section class="experience">
+                    <h2>Досвід роботи</h2>
+                    {% for exp in work_experiences %}
+                    <div class="job">
+                        <h3>{{ exp.position }}</h3>
+                        <p class="meta">{{ exp.company }} | {{ exp.start_date|date:"M Y" }} - {% if exp.currently_working %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</p>
+                        <p>{{ exp.description }}</p>
+                    </div>
+                    {% endfor %}
+                </section>
+                
+                <section class="education">
+                    <h2>Освіта</h2>
+                    {% for edu in educations %}
+                    <div class="school">
+                        <h3>{{ edu.institution }}</h3>
+                        <p class="degree">{{ edu.degree }}, {{ edu.field_of_study }}</p>
+                        <p class="period">{{ edu.start_date|date:"Y" }} - {% if edu.currently_studying %}Present{% else %}{{ edu.end_date|date:"Y" }}{% endif %}</p>
+                    </div>
+                    {% endfor %}
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

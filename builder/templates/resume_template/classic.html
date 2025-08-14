@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ resume.title }} - {{ personal_info.first_name }} {{ personal_info.last_name }}</title>
+    <link href="{% static 'css/resume_templates/classic.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="resume-container">
+        <header>
+            <h1>{{ personal_info.first_name }} {{ personal_info.last_name }}</h1>
+            <div class="contact-info">
+                <p>{{ personal_info.email }} | {{ personal_info.phone }}</p>
+                {% if personal_info.address %}<p>{{ personal_info.address }}</p>{% endif %}
+            </div>
+        </header>
+
+        <section class="section">
+            <h2>Про себе</h2>
+            <p>{{ personal_info.summary }}</p>
+        </section>
+
+        <section class="section">
+            <h2>Досвід роботи</h2>
+            {% for exp in work_experiences %}
+            <div class="experience">
+                <h3>{{ exp.position }} - {{ exp.company }}</h3>
+                <p class="date">{{ exp.start_date|date:"Y" }} - {% if exp.currently_working %}Present{% else %}{{ exp.end_date|date:"Y" }}{% endif %}</p>
+                <p>{{ exp.description }}</p>
+            </div>
+            {% endfor %}
+        </section>
+
+        <section class="section">
+            <h2>Освіта</h2>
+            {% for edu in educations %}
+            <div class="education">
+                <h3>{{ edu.institution }}</h3>
+                <p class="degree">{{ edu.degree }} - {{ edu.field_of_study }}</p>
+                <p class="date">{{ edu.start_date|date:"Y" }} - {% if edu.currently_studying %}Present{% else %}{{ edu.end_date|date:"Y" }}{% endif %}</p>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+</body>
+</html>

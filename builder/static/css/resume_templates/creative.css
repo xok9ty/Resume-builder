@@ -1,0 +1,137 @@
+body {
+    margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.creative-resume {
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+}
+
+.name-title h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 36px;
+    margin: 0;
+}
+
+.name-title h1 span {
+    font-weight: 300;
+}
+
+.name-title .title {
+    font-size: 18px;
+    margin: 5px 0 0;
+    opacity: 0.9;
+}
+
+.contact-info {
+    text-align: right;
+}
+
+.contact-info p {
+    margin: 5px 0;
+}
+
+.main-content {
+    display: flex;
+}
+
+.left-column {
+    width: 35%;
+    padding: 30px;
+    background-color: #f5f7fa;
+}
+
+.right-column {
+    width: 65%;
+    padding: 30px;
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: #2c3e50;
+    position: relative;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, #6e8efb, #a777e3);
+}
+
+.skill {
+    margin-bottom: 15px;
+}
+
+.skill-name {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.skill-level {
+    height: 8px;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.level-bar {
+    height: 100%;
+    background: linear-gradient(to right, #6e8efb, #a777e3);
+}
+
+.job, .school {
+    margin-bottom: 25px;
+}
+
+.meta {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .contact-info {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .main-content {
+        flex-direction: column;
+    }
+    .left-column, .right-column {
+        width: 100%;
+    }
+}
+
+@media print {
+    body {
+        background: none;
+    }
+    .creative-resume {
+        box-shadow: none;
+        margin: 0;
+    }
+}
