@@ -1,6 +1,7 @@
 from .models import ResumeTemplate
 from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.views.generic import ListView
 
 
 class HomePageView(TemplateView):
@@ -19,3 +20,11 @@ class HomePageView(TemplateView):
         ]
         
         return context
+
+class TemplateGalleryView(ListView):
+    model = ResumeTemplate
+    template_name = 'template_gallery.html'
+    context_object_name = 'templates'
+    
+    def get_queryset(self):
+        return ResumeTemplate.objects.all()
