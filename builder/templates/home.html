@@ -12,27 +12,49 @@
 <body>
     <div class="hero-section text-center">
         <div class="container">
-            <h1 class="display-4">Resume Builder</h1>
-            <p class="lead">Створюйте професійні резюме за лічені хвилини</p>
-            <div class="mt-4">
-                <a href="#" class="btn btn-primary btn-lg me-2">Почати зараз</a>
-                <a href="#" class="btn btn-outline-secondary btn-lg">Дізнатись більше</a>
+            <h1 class="display-4 fw-bold mb-3">Resume Builder</h1>
+            <p class="lead mb-4">Створюйте професійні резюме за лічені хвилини</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/create-resume/" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Створити резюме
+                </a>
+                <a href="{% url 'template_gallery' %}" class="btn btn-outline-primary btn-lg btn-view-templates">
+                    <i class="bi bi-collection"></i> Переглянути шаблони
+                </a>
             </div>
         </div>
     </div>
 
-    <div class="container mb-5">
-        <h2 class="text-center mb-4">Наші можливості</h2>
-        <div class="row">
-            {% for feature in features %}
-            <div class="col-md-4 text-center feature-item">
-                <div class="feature-icon">
-                    <i class="bi bi-check-circle-fill"></i>
+        <div class="container mb-5">
+        <h2 class="text-center mb-4">Чому наш конструктор резюме?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card p-4 shadow-sm">
+                    <div class="text-center text-primary mb-3">
+                        <i class="bi bi-lightning" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="text-center">Швидко</h3>
+                    <p class="text-center">Створення резюме за 5 хвилин</p>
                 </div>
-                <h3>{{ feature }}</h3>
-                <p>Опис можливості...</p>
             </div>
-            {% endfor %}
+            <div class="col-md-4">
+                <div class="card feature-card p-4 shadow-sm">
+                    <div class="text-center text-primary mb-3">
+                        <i class="bi bi-layout-wtf" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="text-center">Багато шаблонів</h3>
+                    <p class="text-center">Виберіть ідеальний дизайн</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card p-4 shadow-sm">
+                    <div class="text-center text-primary mb-3">
+                        <i class="bi bi-file-earmark-pdf" style="font-size: 2rem;"></i>
+                    </div>
+                    <h3 class="text-center">Експорт у PDF</h3>
+                    <p class="text-center">Зручне завантаження</p>
+                </div>
+            </div>
         </div>
     </div>
 
