@@ -1,7 +1,7 @@
-from .models import ResumeTemplate
+from .models import ResumeTemplate, Resume
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, CreateView
 
 
 class HomePageView(TemplateView):
@@ -28,3 +28,17 @@ class TemplateGalleryView(ListView):
     
     def get_queryset(self):
         return ResumeTemplate.objects.all()
+
+class TemplatePreviewView(DetailView):
+    model = ResumeTemplate
+    template_name = 'template_preview.html'
+    context_object_name = 'template'
+
+class CreateResumeView(CreateView):
+    model = Resume
+    template_name = 'create_resume.html'
+    fields = ['title', 'template']  
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
