@@ -15,7 +15,7 @@
             <h1 class="display-4 fw-bold mb-3">Resume Builder</h1>
             <p class="lead mb-4">Створюйте професійні резюме за лічені хвилини</p>
             <div class="d-flex justify-content-center gap-3">
-                <a href="/create-resume/" class="btn btn-primary btn-lg">
+                <a href="{% url 'create_resume' %}?template={{ template.id }}" class="btn btn-primary btn-lg">
                     <i class="bi bi-plus-circle"></i> Створити резюме
                 </a>
                 <a href="{% url 'template_gallery' %}" class="btn btn-outline-primary btn-lg btn-view-templates">
@@ -68,7 +68,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ template.name }}</h5>
                         <p class="card-text">{{ template.description|truncatechars:100 }}</p>
-                        <a href="#" class="btn btn-primary">Використати</a>
+                        <a href="{% url 'create_resume' %}?template={{ template.id }}   " class="btn btn-primary">Використати</a>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
 
     <footer class="footer">
         <div class="container text-center">
-            <p>&copy; 2023 Resume Builder. Усі права захищені.</p>
+            <p>&copy; 2025 Resume Builder. Усі права захищені.</p>
         </div>
     </footer>
 

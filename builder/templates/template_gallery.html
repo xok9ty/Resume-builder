@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -6,59 +7,9 @@
     <title>Галерея шаблонів резюме</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            padding-top: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .template-card {
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 30px;
-            border: none;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .template-img {
-            height: 200px;
-            object-fit: cover;
-            width: 100%;
-        }
-        .btn-choose {
-            width: 100%;
-            font-weight: 500;
-        }
-        .footer {
-            background-color: #343a40;
-            color: white;
-            padding: 20px 0;
-            margin-top: 50px;
-            text-align: center;
-        }
-        .nav-custom {
-            background-color: #343a40;
-            padding: 15px 0;
-            margin-bottom: 30px;
-        }
-        .nav-custom a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: 500;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- Навігація -->
     <div class="nav-custom">
         <div class="container">
             <a href="/"><i class="bi bi-house"></i> Головна</a>
@@ -67,7 +18,6 @@
         </div>
     </div>
 
-    <!-- Основний вміст -->
     <div class="container">
         <div class="header">
             <h1>Доступні шаблони резюме</h1>
@@ -84,20 +34,23 @@
                         <p class="card-text">{{ template.description|truncatechars:100 }}</p>
                     </div>
                     <div class="card-footer bg-white">
-                        <a href="/create-resume/?template={{ template.id }}" class="btn btn-primary btn-choose">
-                            <i class="bi bi-check-circle"></i> Вибрати
+                        <a href="{% url 'template_preview' template.id %}" class="btn btn-primary btn-choose">
+                            <i class="bi bi-check-circle"></i> Переглянути
                         </a>
                     </div>
                 </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">Немає доступних шаблонів</div>
             </div>
             {% endfor %}
         </div>
     </div>
 
-    <!-- Підвал -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2023 Resume Builder. Усі права захищені.</p>
+        <div class="container text-center">
+            <p>&copy; 2025 Resume Builder. Усі права захищені.</p>
         </div>
     </footer>
 
