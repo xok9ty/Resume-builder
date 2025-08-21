@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <div class="user-nav">
+        {% if user.is_authenticated %}
+            <span>Вітаємо, {{ user.username }}!</span>
+            <a href="{% url 'profile' %}">Профіль</a>
+            <a href="{% url 'logout' %}">Вийти</a>
+        {% else %}
+            <a href="{% url 'login' %}">Увійти</a>
+            <a href="{% url 'register' %}">Реєстрація</a>
+        {% endif %}
+    </div>
     <div class="hero-section text-center">
         <div class="container">
             <h1 class="display-4 fw-bold mb-3">Resume Builder</h1>
