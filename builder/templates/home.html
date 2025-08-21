@@ -10,32 +10,68 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div class="user-nav">
-        {% if user.is_authenticated %}
-            <span>Вітаємо, {{ user.username }}!</span>
-            <a href="{% url 'profile' %}">Профіль</a>
-            <a href="{% url 'logout' %}">Вийти</a>
-        {% else %}
-            <a href="{% url 'login' %}">Увійти</a>
-            <a href="{% url 'register' %}">Реєстрація</a>
-        {% endif %}
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-file-earmark-richtext me-2"></i>Resume Builder
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="navbar-text text-light me-3">
+                            <i class="bi bi-person-circle me-1"></i>Вітаємо, {{ user.username }}!
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="bi bi-person me-1"></i>Профіль
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="bi bi-box-arrow-right me-1"></i>Вийти
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Увійти
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">
+                            <i class="bi bi-person-plus me-1"></i>Реєстрація
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
     <div class="hero-section text-center">
         <div class="container">
             <h1 class="display-4 fw-bold mb-3">Resume Builder</h1>
             <p class="lead mb-4">Створюйте професійні резюме за лічені хвилини</p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'create_resume' %}?template={{ template.id }}" class="btn btn-primary btn-lg">
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'create_resume' %}" class="btn btn-primary btn-lg">
                     <i class="bi bi-plus-circle"></i> Створити резюме
                 </a>
-                <a href="{% url 'template_gallery' %}" class="btn btn-outline-primary btn-lg btn-view-templates">
+                <a href="{% url 'template_gallery' %}" class="btn btn-outline-primary btn-lg">
                     <i class="bi bi-collection"></i> Переглянути шаблони
                 </a>
             </div>
         </div>
     </div>
 
-        <div class="container mb-5">
+    <div class="container mb-5">
         <h2 class="text-center mb-4">Чому наш конструктор резюме?</h2>
         <div class="row g-4">
             <div class="col-md-4">
@@ -72,20 +108,22 @@
         <h2 class="text-center mb-4">Популярні шаблони</h2>
         <div class="row">
             {% for template in popular_templates %}
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="card template-card">
-                {% if template.preview_image %}
-                    <img src="{{ template.preview_image.url }}" class="template-img" alt="{{ template.name }}"
-                        onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'height:200px; background:#eee; display:flex; align-items:center; justify-content:center;\'>Помилка завантаження зображення</div>'">
-                {% else %}
-                    <div style="height:200px; background:#eee; display:flex; align-items:center; justify-content:center;">
-                        Зображення відсутнє
-                    </div>
-                {% endif %}
+                    {% if template.preview_image %}
+                        <img src="{{ template.preview_image.url }}" class="template-img" alt="{{ template.name }}"
+                            onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'height:200px; background:#eee; display:flex; align-items:center; justify-content:center;\'>Помилка завантаження зображення</div>'">
+                    {% else %}
+                        <div style="height:200px; background:#eee; display:flex; align-items:center; justify-content:center;">
+                            Зображення відсутнє
+                        </div>
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ template.name }}</h5>
                         <p class="card-text">{{ template.description|truncatechars:100 }}</p>
-                        <a href="{% url 'create_resume' %}?template={{ template.id }}   " class="btn btn-primary">Використати</a>
+                        <a href="{% url 'template_preview' template.id %}" class="btn btn-primary w-100">
+                            <i class="bi bi-eye"></i> Переглянути
+                        </a>
                     </div>
                 </div>
             </div>

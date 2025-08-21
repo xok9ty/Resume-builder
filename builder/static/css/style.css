@@ -110,3 +110,70 @@ body {
 .action-buttons {
     margin-top: 20px;
 }
+
+.user-nav {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    padding: 15px 0;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.user-nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.user-nav span {
+    color: #ecf0f1;
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.user-nav a {
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    min-width: 100px;
+}
+
+.user-nav a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.user-nav a[href*="profile"] {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    border-color: #3498db;
+}
+
+.user-nav a[href*="logout"] {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    border-color: #e74c3c;
+}
+
+.user-nav a[href*="login"] {
+    background: linear-gradient(45deg, #2ecc71, #27ae60);
+    border-color: #2ecc71;
+}
+
+.user-nav a[href*="register"] {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad);
+    border-color: #9b59b6;
+}
+
+.user-nav a:hover {
+    background: transparent;
+    border-color: currentColor;
+}
