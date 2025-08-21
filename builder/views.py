@@ -48,7 +48,11 @@ class LogoutView(View):
 
 @login_required
 def profile_view(request):
-    return render(request, 'profile.html', {'user': request.user})
+    context = {
+        'user': request.user,
+        'page_title': 'Профіль користувача - Resume Builder'
+    }
+    return render(request, 'profile.html', context)
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
