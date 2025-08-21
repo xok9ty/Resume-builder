@@ -32,8 +32,10 @@ class ResumeTemplate(models.Model):
     name = models.CharField(max_length=100, verbose_name='Назва шаблону')
     description = models.TextField(verbose_name='Опис шаблону')
     thumbnail = models.ImageField(upload_to='template_thumbnails/', verbose_name='Мініатюра')
+    preview_image = models.ImageField(upload_to='template_previews/', verbose_name='Зображення прев\'ю')  # ВИПРАВЛЕНО
     html_file = models.FileField(upload_to='templates/', verbose_name='HTML файл шаблону')
     css_file = models.FileField(upload_to='templates/css/', verbose_name='CSS файл шаблону', blank=True, null=True)
+    is_premium = models.BooleanField(default=False, verbose_name='Преміум шаблон')
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0, verbose_name='Ціна')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата створення')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата оновлення')

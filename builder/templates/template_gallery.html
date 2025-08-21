@@ -28,7 +28,14 @@
             {% for template in templates %}
             <div class="col-md-4">
                 <div class="card template-card">
-                    <img src="{{ template.preview_image.url }}" class="template-img" alt="{{ template.name }}">
+                    {% if template.preview_image %}
+                        <img src="{{ template.thumbnail.url }}" class="template-img" alt="{{ template.name }}"
+                            onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'height:200px; background:#eee; display:flex; align-items:center; justify-content:center;\'>Помилка завантаження зображення</div>'">
+                    {% else %}
+                        <div style="height:200px; background:#eee; display:flex; align-items:center; justify-content:center;">
+                            Зображення відсутнє
+                        </div>
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ template.name }}</h5>
                         <p class="card-text">{{ template.description|truncatechars:100 }}</p>
