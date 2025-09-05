@@ -7,6 +7,18 @@
     <title>Резюме: {{ resume.title }} - Resume Builder</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -18,6 +30,9 @@
                 <a class="nav-link" href="{% url 'create_resume_start' %}">
                     <i class="bi bi-plus-circle me-1"></i>Нове резюме
                 </a>
+                <a class="nav-link" href="{% url 'profile' %}">
+                    <i class="bi bi-person-circle me-1"></i>Мій профіль
+                </a>
                 <a class="nav-link" href="/">
                     <i class="bi bi-house me-1"></i>Головна
                 </a>
@@ -28,13 +43,65 @@
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <div class="text-center mb-4">
-                    <h1 class="display-5 text-primary">{{ resume.title }}</h1>
-                    <p class="text-muted">Створено: {{ resume.created_at|date:"d.m.Y H:i" }}</p>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-5 text-primary">{{ resume.title }}</h1>
+                        <p class="text-muted">Створено: {{ resume.created_at|date:"d.m.Y H:i" }}</p>
+                    </div>
+                    <div class="btn-group">
+                        {% if not is_public_view %}
+                        <a href="{% url 'profile' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>До профілю
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
 
+                {% if not is_public_view %}
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-gear me-2"></i>Керування резюме
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <h6>Статус публікації</h6>
+                                <form method="post" action="{% url 'generate_share_link' resume.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    {% if resume.is_public %}
+                                        <input type="hidden" name="make_private" value="true">
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="bi bi-lock me-1"></i>Зробити приватним
+                                        </button>
+                                    {% else %}
+                                        <input type="hidden" name="make_public" value="true">
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-unlock me-1"></i>Зробити публічним
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <h6>Посилання для поширення</h6>
+                                {% if resume.is_public %}
+                                    <a href="{% url 'copy_share_link' resume.id %}" class="btn btn-info">
+                                        <i class="bi bi-share me-1"></i>Копіювати посилання
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-outline-secondary" disabled>
+                                        <i class="bi bi-share me-1"></i>Спочатку зробіть публічним
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
                         <h5 class="mb-0">
                             <i class="bi bi-info-circle me-2"></i>Інформація про резюме
                         </h5>
@@ -243,20 +310,23 @@
                 </div>
                 {% endif %}
 
-
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                    {% if not is_public_view %}
                     <a href="{% url 'create_resume_start' %}" class="btn btn-primary me-md-2">
                         <i class="bi bi-plus-circle me-1"></i>Створити нове
                     </a>
+                    {% endif %}
+                    
                     {% if can_download %}
                     <a href="{% url 'download_resume' resume.id %}" class="btn btn-success me-md-2">
                         <i class="bi bi-download me-1"></i>Завантажити PDF
                     </a>
                     {% endif %}
+                    
                     {% if not is_public_view %}
-                    <button class="btn btn-outline-info" id="shareButton">
-                        <i class="bi bi-share me-1"></i>Поділитися
-                    </button>
+                    <a href="{% url 'profile' %}" class="btn btn-outline-secondary me-md-2">
+                        <i class="bi bi-list me-1"></i>Всі резюме
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -268,25 +338,6 @@
             <p class="mb-0">&copy; 2025 Resume Builder. Усі права захищені.</p>
         </div>
     </footer>
-
-
-    <script>
-    document.querySelector('.btn-outline-info').addEventListener('click', async function() {
-        const btn = this, original = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-arrow-repeat spinner"></i>';
-        btn.disabled = true;
-        try {
-            const res = await fetch("{% url 'generate_share_link' resume.id %}", {
-                method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}'}
-            });
-            await navigator.clipboard.writeText((await res.json()).share_url);
-            btn.innerHTML = '<i class="bi bi-check-circle"></i>';
-            setTimeout(() => btn.innerHTML = original, 1500);
-        } catch { btn.innerHTML = original; }
-        btn.disabled = false;
-    });
-    </script>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
