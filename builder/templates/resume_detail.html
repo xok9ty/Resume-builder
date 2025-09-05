@@ -248,12 +248,16 @@
                     <a href="{% url 'create_resume_start' %}" class="btn btn-primary me-md-2">
                         <i class="bi bi-plus-circle me-1"></i>Створити нове
                     </a>
+                    {% if can_download %}
                     <a href="{% url 'download_resume' resume.id %}" class="btn btn-success me-md-2">
                         <i class="bi bi-download me-1"></i>Завантажити PDF
                     </a>
-                    <button class="btn btn-outline-info">
+                    {% endif %}
+                    {% if not is_public_view %}
+                    <button class="btn btn-outline-info" id="shareButton">
                         <i class="bi bi-share me-1"></i>Поділитися
                     </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -264,6 +268,25 @@
             <p class="mb-0">&copy; 2025 Resume Builder. Усі права захищені.</p>
         </div>
     </footer>
+
+
+    <script>
+    document.querySelector('.btn-outline-info').addEventListener('click', async function() {
+        const btn = this, original = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-arrow-repeat spinner"></i>';
+        btn.disabled = true;
+        try {
+            const res = await fetch("{% url 'generate_share_link' resume.id %}", {
+                method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}'}
+            });
+            await navigator.clipboard.writeText((await res.json()).share_url);
+            btn.innerHTML = '<i class="bi bi-check-circle"></i>';
+            setTimeout(() => btn.innerHTML = original, 1500);
+        } catch { btn.innerHTML = original; }
+        btn.disabled = false;
+    });
+    </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

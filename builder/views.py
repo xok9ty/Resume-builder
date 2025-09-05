@@ -1,18 +1,19 @@
 from .models import ResumeTemplate, Resume
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, ListView, DetailView, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
 from .forms import *
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from xhtml2pdf import pisa
 import os
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from io import BytesIO
+from django.utils.crypto import get_random_string
+from django.views.decorators.csrf import csrf_exempt
 
 
 class LoginView(View):
@@ -438,4 +439,31 @@ class ResumeDetailView(LoginRequiredMixin, View):
         return render(request, 'resume_detail.html', {
             'resume': resume,
             'can_download': True
+        })
+
+class GenerateShareLinkView(LoginRequiredMixin, View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
+    def post(self, request, pk):
+        resume = get_object_or_404(Resume, id=pk, user=request.user)
+        
+        resume.is_public = True
+        if not resume.share_token:
+            resume.share_token = get_random_string(length=32)
+        resume.save()
+        
+        share_url = request.build_absolute_uri(
+            reverse('public_resume_detail', kwargs={'pk': resume.id, 'token': resume.share_token})
+        )
+        return JsonResponse({'share_url': share_url})
+
+class PublicResumeDetailView(View):
+    def get(self, request, pk, token):
+        resume = get_object_or_404(Resume, id=pk, share_token=token, is_public=True)
+        return render(request, 'resume_detail.html', {
+            'resume': resume,
+            'is_public_view': True,
+            'can_download': False  
         })

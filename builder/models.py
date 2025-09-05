@@ -54,6 +54,13 @@ class Resume(models.Model):
     is_public = models.BooleanField(default=False, verbose_name='Публічне')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата створення')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата оновлення')
+    share_token = models.CharField(max_length=32, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.share_token and self.is_public:
+            from django.utils.crypto import get_random_string
+            self.share_token = get_random_string(length=32)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Резюме'
