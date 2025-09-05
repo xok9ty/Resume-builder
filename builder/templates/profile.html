@@ -20,6 +20,9 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -153,6 +156,7 @@
                     </div>
                 </div>
 
+                <!-- Секція з резюме -->
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-info text-white">
                         <h5 class="card-title mb-0">
@@ -183,38 +187,48 @@
                                             <td>
                                                 {% if resume.is_public %}
                                                     <span class="badge bg-success">Публічне</span>
-                                                    {% if resume.share_token %}
-                                                    <br>
-                                                    <small class="text-muted share-link">
-                                                        <i class="bi bi-link-45deg"></i>
-                                                        {{ request.scheme }}://{{ request.get_host }}{% url 'public_resume_detail' pk=resume.id token=resume.share_token %}
-                                                    </small>
-                                                    {% endif %}
                                                 {% else %}
                                                     <span class="badge bg-secondary">Приватне</span>
                                                 {% endif %}
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
+                                                    <!-- Перегляд -->
                                                     <a href="{% url 'resume_detail' pk=resume.id %}" class="btn btn-outline-primary" title="Переглянути">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
+                                                    
+                                                    <!-- Завантаження -->
                                                     <a href="{% url 'download_resume' pk=resume.id %}" class="btn btn-outline-success" title="Завантажити PDF">
                                                         <i class="bi bi-download"></i>
                                                     </a>
-                                                    {% if not resume.is_public %}
+                                                    
+                                                    <!-- Поширення -->
+                                                    {% if resume.is_public %}
+                                                    <a href="{% url 'copy_share_link' pk=resume.id %}" class="btn btn-outline-info" title="Копіювати посилання">
+                                                        <i class="bi bi-share"></i>
+                                                    </a>
+                                                    {% else %}
+                                                    <button class="btn btn-outline-secondary" title="Спочатку зробіть публічним" disabled>
+                                                        <i class="bi bi-share"></i>
+                                                    </button>
+                                                    {% endif %}
+                                                    
+                                                    <!-- Зміна статусу -->
+                                                    {% if resume.is_public %}
                                                     <form method="post" action="{% url 'generate_share_link' pk=resume.id %}" class="d-inline">
                                                         {% csrf_token %}
-                                                        <button type="submit" class="btn btn-outline-info" title="Зробити публічним">
-                                                            <i class="bi bi-share"></i>
+                                                        <input type="hidden" name="make_private" value="true">
+                                                        <button type="submit" class="btn btn-outline-warning" title="Зробити приватним">
+                                                            <i class="bi bi-lock"></i>
                                                         </button>
                                                     </form>
                                                     {% else %}
                                                     <form method="post" action="{% url 'generate_share_link' pk=resume.id %}" class="d-inline">
                                                         {% csrf_token %}
-                                                        <input type="hidden" name="make_private" value="true">
-                                                        <button type="submit" class="btn btn-outline-warning" title="Зробити приватним">
-                                                            <i class="bi bi-share-fill"></i>
+                                                        <input type="hidden" name="make_public" value="true">
+                                                        <button type="submit" class="btn btn-outline-success" title="Зробити публічним">
+                                                            <i class="bi bi-unlock"></i>
                                                         </button>
                                                     </form>
                                                     {% endif %}

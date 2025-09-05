@@ -446,22 +446,27 @@ class ResumeDetailView(LoginRequiredMixin, View):
         })
 
 class GenerateShareLinkView(LoginRequiredMixin, View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-    
     def post(self, request, pk):
         resume = get_object_or_404(Resume, id=pk, user=request.user)
         
-        resume.is_public = True
-        if not resume.share_token:
-            resume.share_token = get_random_string(length=32)
-        resume.save()
-        
-        share_url = request.build_absolute_uri(
-            reverse('public_resume_detail', kwargs={'pk': resume.id, 'token': resume.share_token})
-        )
-        return JsonResponse({'share_url': share_url})
+        if 'make_private' in request.POST:
+            resume.is_public = False
+            resume.save()
+            return redirect('profile')
+        elif 'make_public' in request.POST:
+            resume.is_public = True
+            if not resume.share_token:
+                resume.share_token = get_random_string(length=32)
+            resume.save()
+            return redirect('profile')
+        else:
+            if not resume.is_public:
+                return HttpResponse('Резюме не є публічним', status=400)
+            
+            share_url = request.build_absolute_uri(
+                reverse('public_resume_detail', kwargs={'pk': resume.id, 'token': resume.share_token})
+            )
+            return HttpResponse(share_url)
 
 class PublicResumeDetailView(View):
     def get(self, request, pk, token):
@@ -470,4 +475,20 @@ class PublicResumeDetailView(View):
             'resume': resume,
             'is_public_view': True,
             'can_download': False  
+        })
+    
+class CopyShareLinkView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        resume = get_object_or_404(Resume, id=pk, user=request.user)
+        
+        if not resume.is_public or not resume.share_token:
+            return HttpResponse('Резюме не є публічним', status=400)
+        
+        share_url = request.build_absolute_uri(
+            reverse('public_resume_detail', kwargs={'pk': resume.id, 'token': resume.share_token})
+        )
+
+        return render(request, 'copy_share_link.html', {
+            'share_url': share_url,
+            'resume': resume
         })
