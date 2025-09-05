@@ -57,8 +57,11 @@ class LogoutView(View):
 
 @login_required
 def profile_view(request):
+    user_resumes = Resume.objects.filter(user=request.user).order_by('-updated_at')
+    
     context = {
         'user': request.user,
+        'resumes': user_resumes,
         'page_title': 'Профіль користувача - Resume Builder'
     }
     return render(request, 'profile.html', context)
