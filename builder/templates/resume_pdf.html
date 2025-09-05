@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ resume.title }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .contact-info {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .experience-item, .education-item {
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+        .date {
+            color: #666;
+            font-style: italic;
+            font-size: 14px;
+        }
+        .skills {
+            margin-top: 10px;
+        }
+        .skill-badge {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 3px 8px;
+            margin: 3px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 12px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        /* Стилі для друку */
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            .header {
+                margin-bottom: 15px;
+            }
+            .section {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style="margin: 0; font-size: 24px;">{{ resume.title }}</h1>
+        <p style="margin: 5px 0; color: #666;">Створено: {{ resume.created_at|date:"d.m.Y" }}</p>
+    </div>
+
+    {% if resume.personal_info %}
+    <div class="section">
+        <div class="section-title">Особиста інформація</div>
+        <div style="text-align: center;">
+            {% if resume.personal_info.photo %}
+            <img src="{{ resume.personal_info.photo.path }}" style="max-width: 120px; max-height: 120px; margin-bottom: 15px; border-radius: 5px;">
+            {% endif %}
+            
+            <h2 style="margin: 10px 0; font-size: 20px;">
+                {{ resume.personal_info.last_name }} 
+                {{ resume.personal_info.first_name }} 
+                {{ resume.personal_info.middle_name }}
+            </h2>
+            
+            <div class="contact-info">
+                <p style="margin: 5px 0;">
+                    <strong>Email:</strong> {{ resume.personal_info.email }}<br>
+                    <strong>Телефон:</strong> {{ resume.personal_info.phone }}
+                </p>
+                {% if resume.personal_info.address %}
+                <p style="margin: 5px 0;">
+                    <strong>Адреса:</strong> {{ resume.personal_info.address }}
+                </p>
+                {% endif %}
+            </div>
+            
+            {% if resume.personal_info.summary %}
+            <div style="margin-top: 15px; text-align: left; padding: 0 20px;">
+                <h3 style="margin: 10px 0; font-size: 16px;">Про себе:</h3>
+                <p style="margin: 0; font-style: italic;">{{ resume.personal_info.summary }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if resume.work_experiences.all %}
+    <div class="section">
+        <div class="section-title">Досвід роботи</div>
+        {% for exp in resume.work_experiences.all %}
+        <div class="experience-item">
+            <h3 style="margin: 0 0 5px 0; font-size: 16px;">
+                {{ exp.position }} - {{ exp.company }}
+            </h3>
+            <div class="date">
+                {{ exp.start_date|date:"Y" }} - {% if exp.currently_working %}нині{% else %}{{ exp.end_date|date:"Y" }}{% endif %}
+            </div>
+            {% if exp.description %}
+            <p style="margin: 8px 0 0 0; font-size: 14px;">{{ exp.description }}</p>
+            {% endif %}
+        </div>
+        {% if not forloop.last %}<hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if resume.educations.all %}
+    <div class="section">
+        <div class="section-title">Освіта</div>
+        {% for edu in resume.educations.all %}
+        <div class="education-item">
+            <h3 style="margin: 0 0 5px 0; font-size: 16px;">{{ edu.institution }}</h3>
+            <div style="font-weight: bold; margin-bottom: 3px;">{{ edu.degree }} - {{ edu.field_of_study }}</div>
+            <div class="date">
+                {{ edu.start_date|date:"Y" }} - {% if edu.currently_studying %}нині{% else %}{{ edu.end_time|date:"Y" }}{% endif %}
+            </div>
+            {% if edu.description %}
+            <p style="margin: 8px 0 0 0; font-size: 14px;">{{ edu.description }}</p>
+            {% endif %}
+        </div>
+        {% if not forloop.last %}<hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">{% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if resume.skills.all %}
+    <div class="section">
+        <div class="section-title">Навички</div>
+        <div class="skills">
+            {% for skill in resume.skills.all %}
+            <span class="skill-badge">
+                {{ skill.name }} ({{ skill.get_level_display }})
+                {% if skill.category %}- {{ skill.category }}{% endif %}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if resume.languages.all %}
+    <div class="section">
+        <div class="section-title">Мови</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            {% for language in resume.languages.all %}
+            <div style="padding: 8px; background: #f8f9fa; border-radius: 5px;">
+                <strong>{{ language.name }}</strong>: 
+                <span style="color: #495057;">{{ language.get_level_display }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if resume.certificates.all %}
+    <div class="section">
+        <div class="section-title">Сертифікати</div>
+        <div style="display: grid; gap: 12px;">
+            {% for cert in resume.certificates.all %}
+            <div style="padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #007bff;">
+                <h4 style="margin: 0 0 5px 0; font-size: 15px;">{{ cert.name }}</h4>
+                <div style="color: #495057; margin-bottom: 3px;">{{ cert.issuing_organization }}</div>
+                <div class="date">Отримано: {{ cert.issue_date|date:"d.m.Y" }}</div>
+                {% if cert.expiration_date %}
+                <div class="date">Дійсний до: {{ cert.expiration_date|date:"d.m.Y" }}</div>
+                {% endif %}
+                {% if cert.credential_id %}
+                <div style="font-size: 12px; color: #6c757d;">ID: {{ cert.credential_id }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        <p>Згенеровано за допомогою Resume Builder • {{ resume.created_at|date:"d.m.Y H:i" }}</p>
+    </div>
+</body>
+</html>

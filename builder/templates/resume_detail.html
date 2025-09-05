@@ -28,13 +28,11 @@
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <!-- Заголовок -->
                 <div class="text-center mb-4">
                     <h1 class="display-5 text-primary">{{ resume.title }}</h1>
                     <p class="text-muted">Створено: {{ resume.created_at|date:"d.m.Y H:i" }}</p>
                 </div>
 
-                <!-- Інформація про резюме -->
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
@@ -59,7 +57,6 @@
                     </div>
                 </div>
 
-                <!-- Особиста інформація -->
                 {% if resume.personal_info %}
                 <div class="card mb-4">
                     <div class="card-header bg-light">
@@ -110,7 +107,6 @@
                 </div>
                 {% endif %}
 
-                <!-- Досвід роботи -->
                 {% if resume.work_experiences.all %}
                 <div class="card mb-4">
                     <div class="card-header bg-light">
@@ -137,7 +133,6 @@
                 </div>
                 {% endif %}
 
-                <!-- Освіта -->
                 {% if resume.educations.all %}
                 <div class="card mb-4">
                     <div class="card-header bg-light">
@@ -164,7 +159,6 @@
                 </div>
                 {% endif %}
 
-                <!-- Навички -->
                 {% if resume.skills.all %}
                 <div class="card mb-4">
                     <div class="card-header bg-light">
@@ -192,7 +186,6 @@
                 </div>
                 {% endif %}
 
-                <!-- Мови -->
                 {% if resume.languages.all %}
                 <div class="card mb-4">
                     <div class="card-header bg-light">
@@ -217,7 +210,6 @@
                 </div>
                 {% endif %}
 
-                <!-- Сертифікати -->
                 {% if resume.certificates.all %}
                 <div class="card mb-4">
                     <div class="card-header bg-light">
@@ -251,14 +243,14 @@
                 </div>
                 {% endif %}
 
-                <!-- Кнопки дій -->
+
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
                     <a href="{% url 'create_resume_start' %}" class="btn btn-primary me-md-2">
                         <i class="bi bi-plus-circle me-1"></i>Створити нове
                     </a>
-                    <button class="btn btn-outline-secondary me-md-2">
+                    <a href="{% url 'download_resume' resume.id %}" class="btn btn-success me-md-2">
                         <i class="bi bi-download me-1"></i>Завантажити PDF
-                    </button>
+                    </a>
                     <button class="btn btn-outline-info">
                         <i class="bi bi-share me-1"></i>Поділитися
                     </button>

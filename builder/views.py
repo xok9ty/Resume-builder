@@ -7,6 +7,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from xhtml2pdf import pisa
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from io import BytesIO
 
 
 class LoginView(View):
@@ -381,3 +387,55 @@ class ResumeDetailView(LoginRequiredMixin, View):
     def get(self, request, pk):
         resume = get_object_or_404(Resume, id=pk, user=request.user)
         return render(request, 'resume_detail.html', {'resume': resume})
+
+class DownloadResumePDFView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        resume = get_object_or_404(Resume, id=pk, user=request.user)
+        
+        context = {
+            'resume': resume,
+            'MEDIA_ROOT': settings.MEDIA_ROOT,
+            'STATIC_ROOT': settings.STATIC_ROOT
+        }
+        
+        html_string = render_to_string('resume_pdf.html', context)
+        result = BytesIO()
+        
+        pdf = pisa.pisaDocument(
+            BytesIO(html_string.encode("UTF-8")), 
+            result,
+            encoding='UTF-8',
+            link_callback=self.link_callback
+        )
+        
+        if not pdf.err:
+            response = HttpResponse(result.getvalue(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{resume.title}.pdf"'
+            return response
+        
+        return HttpResponse('Помилка при генерації PDF', status=500)
+    
+    def link_callback(self, uri, rel):
+        sUrl = settings.STATIC_URL
+        sRoot = settings.STATIC_ROOT
+        mUrl = settings.MEDIA_URL
+        mRoot = settings.MEDIA_ROOT
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+        if os.path.isfile(path):
+            return path
+        return uri
+
+class ResumeDetailView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        resume = get_object_or_404(Resume, id=pk, user=request.user)
+        return render(request, 'resume_detail.html', {
+            'resume': resume,
+            'can_download': True
+        })

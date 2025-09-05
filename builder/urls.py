@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HomePageView, TemplateGalleryView, TemplatePreviewView, CreateResumeView, LoginView, RegisterView, LogoutView, profile_view, CreateResumeStartView, CreatePersonalInfoView, CreateWorkExperienceView, CreateEducationView, CreateSkillsView, CreateLanguagesView, CreateCertificatesView, ResumeDetailView
+from .views import HomePageView, TemplateGalleryView, TemplatePreviewView, CreateResumeView, LoginView, RegisterView, LogoutView, profile_view, CreateResumeStartView, CreatePersonalInfoView, CreateWorkExperienceView, CreateEducationView, CreateSkillsView, CreateLanguagesView, CreateCertificatesView, ResumeDetailView, DownloadResumePDFView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -23,4 +23,5 @@ urlpatterns = [
     path('resume/certificates/', CreateCertificatesView.as_view(), name='create_certificates'),
     path('resume/<int:pk>/', ResumeDetailView.as_view(), name='resume_detail'),
 
+    path('resume/<int:pk>/download/', DownloadResumePDFView.as_view(), name='download_resume'),
 ]
