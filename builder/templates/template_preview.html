@@ -17,24 +17,12 @@
                 <img src="{{ template.preview_image.url }}" class="img-fluid mb-3" alt="{{ template.name }}">
                 <h3>Опис шаблону:</h3>
                 <p>{{ template.description }}</p>
-                
-                <div class="resume-preview mt-4 p-3" style="background-color: #f8f9fa;">
-                    <h4>Приклад резюме</h4>
-                    <hr>
-                    <h2>Іван Іванов</h2>
-                    <p>Frontend Developer</p>
-                    <hr>
-                    <h3>Досвід роботи</h3>
-                    <p><strong>Компанія А</strong> - Верстальщик (2020-2022)</p>
-                    <p><strong>Компанія Б</strong> - Frontend Developer (2022-нині)</p>
-                </div>
-            </div>
             
             <div class="action-buttons d-flex justify-content-between">
                 <a href="{% url 'template_gallery' %}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Назад до галереї
                 </a>
-                <a href="{% url 'create_resume' %}?template={{ template.id }}" class="btn btn-primary">
+                <a href="{% url 'create_resume_start' %}?template={{ template.id }}" class="btn btn-primary">
                     <i class="bi bi-check-circle"></i> Вибрати
                 </a>
             </div>

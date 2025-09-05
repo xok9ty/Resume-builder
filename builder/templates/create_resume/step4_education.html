@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Освіта - Крок 4 з 7</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-file-earmark-richtext me-2"></i>Resume Builder
+            </a>
+            <span class="navbar-text text-white">
+                Крок 4 з 7
+            </span>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="progress mb-4" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: 57%;" aria-valuenow="4" aria-valuemin="1" aria-valuemax="7">
+                        4/7
+                    </div>
+                </div>
+
+                <div class="text-center mb-4">
+                    <h2 class="text-primary">Освіта</h2>
+                    <p class="text-muted">Додайте вашу освіту</p>
+                </div>
+
+                {% if educations %}
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Додана освіта</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for edu in educations %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>{{ edu.institution }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ edu.degree }}, {{ edu.field_of_study }}
+                                    <br>
+                                    {{ edu.start_date|date:"Y" }} - 
+                                    {% if edu.currently_studying %}нині{% else %}{{ edu.end_time|date:"Y" }}{% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        {% if not forloop.last %}<hr>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Навчальний заклад</label>
+                                {{ form.institution }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ступінь</label>
+                                    {{ form.degree }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Спеціальність</label>
+                                    {{ form.field_of_study }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Дата початку</label>
+                                    {{ form.start_date }}
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Дата завершення</label>
+                                    {{ form.end_time }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="form-check mt-2">
+                                        {{ form.currently_studying }}
+                                        <label class="form-check-label">Навчаюсь зараз</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Опис</label>
+                                {{ form.description }}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'create_work_experience' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Назад
+                                </a>
+                                <div>
+                                    <button type="submit" name="add_another" class="btn btn-outline-primary me-2">
+                                        <i class="bi bi-plus-circle"></i> Додати ще
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        Далі <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
