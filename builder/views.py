@@ -2,9 +2,11 @@ from .models import ResumeTemplate, Resume
 from django.views.generic import TemplateView, View, ListView, DetailView, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
-from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import PasswordChangeForm
 from django.urls import reverse
 from xhtml2pdf import pisa
 import os
@@ -491,4 +493,44 @@ class CopyShareLinkView(LoginRequiredMixin, View):
         return render(request, 'copy_share_link.html', {
             'share_url': share_url,
             'resume': resume
+        })
+
+class EditProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = EditProfileForm(instance=request.user)
+        return render(request, 'edit_profile.html', {
+            'form': form,
+            'page_title': 'Редагування профілю - Resume Builder'
+        })
+
+    def post(self, request):
+        form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профіль успішно оновлено!')
+            return redirect('profile')
+        return render(request, 'edit_profile.html', {
+            'form': form,
+            'page_title': 'Редагування профілю - Resume Builder'
+        })
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = PasswordChangeForm(user=request.user)
+        return render(request, 'change_password.html', {
+            'form': form,
+            'page_title': 'Зміна пароля - Resume Builder'
+        })
+
+    def post(self, request):
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Пароль успішно змінено!')
+            return redirect('profile')
+        return render(request, 'change_password.html', {
+            'form': form,
+            'page_title': 'Зміна пароля - Resume Builder'
         })

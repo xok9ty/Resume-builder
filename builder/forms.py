@@ -127,3 +127,29 @@ class CertificateForm(forms.ModelForm):
             'credential_id': forms.TextInput(attrs={'class': 'form-control'}),
             'credential_url': forms.URLInput(attrs={'class': 'form-control'})
         }
+
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'phone_number', 'profile_picture', 'first_name', 'last_name']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ім\'я користувача'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Номер телефону'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ім\'я'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Прізвище'}),
+            'profile_picture': forms.FileInput(attrs={'class': 'form-control'})
+        }
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Користувач з таким іменем вже існує.')
+        return username
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Користувач з таким email вже існує.')
+        return email

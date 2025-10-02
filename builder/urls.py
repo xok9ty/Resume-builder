@@ -1,13 +1,20 @@
 from django.urls import path
-from .views import HomePageView, TemplateGalleryView, TemplatePreviewView, CreateResumeView, LoginView, RegisterView, LogoutView, profile_view, CreateResumeStartView, CreatePersonalInfoView, CreateWorkExperienceView, CreateEducationView, CreateSkillsView, CreateLanguagesView, CreateCertificatesView, ResumeDetailView, DownloadResumePDFView, GenerateShareLinkView, PublicResumeDetailView, CopyShareLinkView
+from .views import (
+    HomePageView, TemplateGalleryView, TemplatePreviewView, CreateResumeView, 
+    LoginView, RegisterView, LogoutView, profile_view, CreateResumeStartView, 
+    CreatePersonalInfoView, CreateWorkExperienceView, CreateEducationView, 
+    CreateSkillsView, CreateLanguagesView, CreateCertificatesView, 
+    ResumeDetailView, DownloadResumePDFView, GenerateShareLinkView, 
+    PublicResumeDetailView, CopyShareLinkView, EditProfileView, ChangePasswordView
+)
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', profile_view, name='profile'),
-
-    path('profile/', profile_view, name='profile'),
+    path('profile/edit/', EditProfileView.as_view(), name='edit_profile'),
+    path('profile/change-password/', ChangePasswordView.as_view(), name='change_password'),
 
     path('', HomePageView.as_view(), name='home'),
 

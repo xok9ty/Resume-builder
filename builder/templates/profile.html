@@ -93,9 +93,9 @@
                                         <i class="bi bi-person" style="font-size: 3rem; color: #6c757d;"></i>
                                     </div>
                                 {% endif %}
-                                <button class="btn btn-outline-primary btn-sm">
+                                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-camera me-1"></i>Змінити фото
-                                </button>
+                                </a>
                             </div>
                             <div class="col-md-8">
                                 <div class="row mb-3">
@@ -124,6 +124,22 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-sm-4">
+                                        <strong>Ім'я:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ user.first_name|default:"Не вказано" }}
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Прізвище:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        {{ user.last_name|default:"Не вказано" }}
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
                                         <strong>Дата реєстрації:</strong>
                                     </div>
                                     <div class="col-sm-8">
@@ -146,17 +162,16 @@
                             <a href="{% url 'create_resume_start' %}" class="btn btn-primary me-md-2">
                                 <i class="bi bi-plus-circle me-1"></i>Створити нове резюме
                             </a>
-                            <button class="btn btn-outline-secondary me-md-2">
+                            <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary me-md-2">
                                 <i class="bi bi-pencil me-1"></i>Редагувати профіль
-                            </button>
-                            <button class="btn btn-outline-danger">
+                            </a>
+                            <a href="{% url 'change_password' %}" class="btn btn-outline-danger">
                                 <i class="bi bi-shield-lock me-1"></i>Змінити пароль
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Секція з резюме -->
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-info text-white">
                         <h5 class="card-title mb-0">
@@ -193,17 +208,14 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <!-- Перегляд -->
                                                     <a href="{% url 'resume_detail' pk=resume.id %}" class="btn btn-outline-primary" title="Переглянути">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    
-                                                    <!-- Завантаження -->
+
                                                     <a href="{% url 'download_resume' pk=resume.id %}" class="btn btn-outline-success" title="Завантажити PDF">
                                                         <i class="bi bi-download"></i>
                                                     </a>
-                                                    
-                                                    <!-- Поширення -->
+
                                                     {% if resume.is_public %}
                                                     <a href="{% url 'copy_share_link' pk=resume.id %}" class="btn btn-outline-info" title="Копіювати посилання">
                                                         <i class="bi bi-share"></i>
@@ -213,8 +225,7 @@
                                                         <i class="bi bi-share"></i>
                                                     </button>
                                                     {% endif %}
-                                                    
-                                                    <!-- Зміна статусу -->
+
                                                     {% if resume.is_public %}
                                                     <form method="post" action="{% url 'generate_share_link' pk=resume.id %}" class="d-inline">
                                                         {% csrf_token %}
