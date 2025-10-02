@@ -6,17 +6,17 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetView as AuthPasswordResetView, PasswordResetDoneView as AuthPasswordResetDoneView, PasswordResetConfirmView as AuthPasswordResetConfirmView, PasswordResetCompleteView as AuthPasswordResetCompleteView
 from django.urls import reverse
 from xhtml2pdf import pisa
 import os
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 from io import BytesIO
 from django.utils.crypto import get_random_string
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 
 class LoginView(View):
@@ -534,3 +534,32 @@ class ChangePasswordView(LoginRequiredMixin, View):
             'form': form,
             'page_title': 'Зміна пароля - Resume Builder'
         })
+
+class PasswordResetView(AuthPasswordResetView):
+    template_name = 'password_reset.html'
+    email_template_name = 'password_reset_email.html'
+    form_class = CustomPasswordResetForm
+    
+    def form_valid(self, form):
+        opts = {
+            'use_https': self.request.is_secure(),
+            'token_generator': default_token_generator,
+            'from_email': 'noreply@resumebuilder.com',
+            'email_template_name': self.email_template_name,
+            'request': self.request,
+            'extra_email_context': {
+                'protocol': 'http', 
+                'domain': '127.0.0.1:8000',
+            },
+        }
+        form.save(**opts)
+        return super().form_valid(form)
+class PasswordResetDoneView(AuthPasswordResetDoneView):
+    template_name = 'password_reset_done.html'
+
+class PasswordResetConfirmView(AuthPasswordResetConfirmView):
+    template_name = 'password_reset_confirm.html'
+    form_class = SetPasswordForm
+
+class PasswordResetCompleteView(AuthPasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'

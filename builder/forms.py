@@ -1,6 +1,8 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm
 from .models import User, Resume, PersonalInfo, WorkExperience, Education, Skill, Language, Certificate
+
+
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -153,3 +155,41 @@ class EditProfileForm(forms.ModelForm):
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('Користувач з таким email вже існує.')
         return email
+    
+
+
+
+
+
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Введіть ваш email',
+            'autocomplete': 'email'
+        })
+    )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Користувача з таким email не знайдено.')
+        return email
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Новий пароль',
+            'autocomplete': 'new-password'
+        })
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Підтвердження пароля',
+            'autocomplete': 'new-password'
+        })
+    )

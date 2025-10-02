@@ -5,7 +5,8 @@ from .views import (
     CreatePersonalInfoView, CreateWorkExperienceView, CreateEducationView, 
     CreateSkillsView, CreateLanguagesView, CreateCertificatesView, 
     ResumeDetailView, DownloadResumePDFView, GenerateShareLinkView, 
-    PublicResumeDetailView, CopyShareLinkView, EditProfileView, ChangePasswordView
+    PublicResumeDetailView, CopyShareLinkView, EditProfileView, ChangePasswordView,
+    PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 )
 
 urlpatterns = [
@@ -15,6 +16,11 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
     path('profile/edit/', EditProfileView.as_view(), name='edit_profile'),
     path('profile/change-password/', ChangePasswordView.as_view(), name='change_password'),
+
+    path('password-reset/', PasswordResetView.as_view(), name='password_reset'),
+    path('password-reset/done/', PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password-reset/confirm/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password-reset/complete/', PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     path('', HomePageView.as_view(), name='home'),
 
