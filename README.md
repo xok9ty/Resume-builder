@@ -14,7 +14,7 @@ Before installation, make sure your system meets the following requirements:
 - Django (version specified in `requirements.txt`)  
 - SQLite (default) or another compatible database  
 - pip — for dependency installation  
-- (Recommended) virtual environment `venv`
+- Virtual environment `venv`
 
 ---
 
@@ -98,8 +98,6 @@ Click **Export** to download your completed resume as:
 - PDF  
 - DOCX  
 
-7. **Edit anytime**  
-You can update your saved data or regenerate the resume whenever needed.
 
 ---
 
